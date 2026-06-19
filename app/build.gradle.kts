@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
@@ -29,7 +31,17 @@ android {
       keyPassword = System.getenv("KEY_PASSWORD")
     }
     create("debugConfig") {
-      storeFile = file("${rootDir}/debug.keystore")
+      val localDebugKeystore = file("${rootDir}/debug.keystore")
+      val base64Keystore = file("${rootDir}/debug.keystore.base64")
+      if (!localDebugKeystore.exists() && base64Keystore.exists()) {
+        try {
+          val decoded = Base64.getDecoder().decode(base64Keystore.readText().trim())
+          localDebugKeystore.writeBytes(decoded)
+        } catch (e: Exception) {
+          println("Warning: Failed to decode base64 debug keystore: ${e.message}")
+        }
+      }
+      storeFile = localDebugKeystore
       storePassword = "android"
       keyAlias = "androiddebugkey"
       keyPassword = "android"
@@ -44,7 +56,13 @@ android {
       signingConfig = signingConfigs.getByName("release")
     }
     debug {
-      signingConfig = signingConfigs.getByName("debugConfig")
+      val localDebugKeystore = file("${rootDir}/debug.keystore")
+      if (localDebugKeystore.exists()) {
+        signingConfig = signingConfigs.getByName("debugConfig")
+      } else {
+        // Fallback to default built-in debug signing configuration provided by Android Gradle Plugin
+        signingConfig = signingConfigs.getByName("debug")
+      }
     }
   }
   compileOptions {
