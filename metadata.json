@@ -1,0 +1,6 @@
+{
+  "name": "AmitSafe",
+  "description": "Secure Private Gallery Vault with Black AMOLED and Glassmorphism design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
