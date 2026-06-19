@@ -25,6 +25,16 @@ jobs:
       with:
         validate-wrappers: false
 
+    - name: Regenerate Gradle Wrapper
+      run: |
+        if command -v gradle &> /dev/null; then
+          gradle wrapper
+        else
+          echo "System gradle not found, downloading a clean wrapper jar"
+          mkdir -p gradle/wrapper
+          curl -Lo gradle/wrapper/gradle-wrapper.jar https://raw.githubusercontent.com/gradle/gradle/v9.3.1/gradle/wrapper/gradle-wrapper.jar
+        fi
+
     - name: Grant Gradle execute permission
       run: chmod +x gradlew
 
