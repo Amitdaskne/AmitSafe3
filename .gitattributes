@@ -1,0 +1,6 @@
+# Force line endings for execution scripts
+gradlew text eol=lf
+gradlew.bat text eol=crlf
+
+# Keep JAR files binary (prevent line-ending corruption)
+*.jar -text
